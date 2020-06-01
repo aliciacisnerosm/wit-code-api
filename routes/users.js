@@ -17,19 +17,23 @@ let validatePermission = (requiredLevel) => {
 
 /* GET users listing. */
 router.get("/", validatePermission(3), function (req, res) {
-  handlePromise(req, res, users.getAllUsers());
+  let active = req.query.active;
+  handlePromise(req, res, users.getAllUsers(active));
 });
 
 router.get("/tutor", validatePermission(2), function (req, res) {
-  handlePromise(req, res, users.getAllType(1));
+  let active = req.query.active;
+  handlePromise(req, res, users.getAllType(1, active));
 });
 
 router.get("/coordinator", validatePermission(3), function (req, res) {
-  handlePromise(req, res, users.getAllType(2));
+  let active = req.query.active;
+  handlePromise(req, res, users.getAllType(2, active));
 });
 
 router.get("/admin", validatePermission(3), function (req, res) {
-  handlePromise(req, res, users.getAllType(3));
+  let active = req.query.active;
+  handlePromise(req, res, users.getAllType(3, active));
 });
 
 router.get("/myinfo", (req, res) => {

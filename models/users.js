@@ -86,9 +86,11 @@ const Users = {
         throw new Error(err.message);
       });
   },
-  getAllUsers: function () {
+  getAllUsers: function (active = null) {
+    let filter = {};
+    if (active) filter.active = active;
     return userModel
-      .find({}, validProjection)
+      .find(filter, validProjection)
       .then((result) => {
         return result;
       })
@@ -96,9 +98,11 @@ const Users = {
         throw new Error(err.message);
       });
   },
-  getAllType: function (type) {
+  getAllType: function (type, active = null) {
+    let filter = { user_type: type };
+    if (active) filter.active = active;
     return userModel
-      .find({ user_type: type }, validProjection)
+      .find(filter, validProjection)
       .then((result) => {
         return result;
       })
