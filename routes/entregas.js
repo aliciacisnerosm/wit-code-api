@@ -7,6 +7,7 @@ let entregas = require("../models/entregas");
 const AWS = require('aws-sdk');
 const bluebird = require('bluebird');
 const multer = require('multer');
+let users = require("../models/users");
 
 // configure the keys for accessing AWS
 AWS.config.update({
@@ -39,70 +40,79 @@ router.get("/", validatePermission(3), function (req, res) {
 
 router.get("/attendance", validatePermission(3), function (req, res) {
     let active = req.query.active;
-    handlePromise(req, res, entregas.getAllType(1, active));
+    handlePromise(req, res, entregas.getAllType('attendance', active));
 });
 
 router.get("/evidence", validatePermission(3), function (req, res) {
     let active = req.query.active;
-    handlePromise(req, res, entregas.getAllType(2, active));
+    handlePromise(req, res, entregas.getAllType('evidence', active));
 });
 
 router.get("/misEntregas", (req, res) => {
-    handlePromise(req, res, entregas.getEntregaByUserId(req.user._id));
+    handlePromise(req, res, entregas.getEntregasByUserId(req.user._id));
 });
 
 router.post("/", (req, res) => {
     let { link, file, date, accepted, entrega_type } = req.body;
-    console.log(date, accepted, entrega_type)
+    
     if (!entrega_type) 
     {
         res.statusMessage = "Parameter missing in the body of the request.";
         return res.status(406).end();
     }
-    if (entrega_type === 'evidence') {
-        if(!file){
-            res.statusMessage = "You need to send the file in the body of the request.";
-            return res.status(406).end();
-        }
-        const s3bucket = new AWS.S3();
-
-        var params = {
-            Bucket: process.env.S3_BUCKET,
-            Key: file.originalname,
-            Body: file.buffer,
-            ContentType: file.mimetype,
-            ACL: 'public-read',
-        };
-        s3bucket.upload(params, function (err, data) {
-            if (err) {
-                res.status(500).json({ error: true, Message: err });
-            } else {
-                let newEntrega = {
-                    weekId,
-                    user: req.user._id,
-                    link: data.data.location,
-                    date: new Date(),
-                    accepted: false,
-                    entrega_type,
-                };            
-                handlePromise(req, res, entregas.createEntrega(newEntrega));
+    users
+        .getUserById(req.user._id)
+        .then((response) => {
+           let user = response._id
+           if (entrega_type === 'evidence') {
+            if(!file){
+                res.statusMessage = "You need to send the file in the body of the request.";
+                return res.status(406).end();
             }
-        });
-    }
-    else {
-        if(!link){
-            res.statusMessage = "Link missing in the body of the request.";
-            return res.status(406).end();
+            const s3bucket = new AWS.S3();
+    
+            var params = {
+                Bucket: process.env.S3_BUCKET,
+                Key: file.originalname,
+                Body: file.buffer,
+                ContentType: file.mimetype,
+                ACL: 'public-read',
+            };
+            s3bucket.upload(params, function (err, data) {
+                if (err) {
+                    res.status(500).json({ error: true, Message: err });
+                } else {
+                    let newEntrega = {
+                        user,
+                        link: data.data.location,
+                        date: new Date(),
+                        accepted: false,
+                        entrega_type,
+                    };            
+                    handlePromise(req, res, entregas.createEntrega(newEntrega));
+                }
+            });
         }
-        let newEntrega = {
-            user: req.user._id,
-            link,
-            date: new Date(),
-            accepted: false,
-            entrega_type,
-        };    
-        handlePromise(req, res, entregas.createEntrega(newEntrega));
-    }    
+        else {
+            if(!link){
+                res.statusMessage = "Link missing in the body of the request.";
+                return res.status(406).end();
+            }
+            let newEntrega = {
+                user,
+                link,
+                date: new Date(),
+                accepted: false,
+                entrega_type,
+            };    
+            handlePromise(req, res, entregas.createEntrega(newEntrega));
+        }    
+          })
+          .catch((err) => {
+            res.statusMessage = err.message;
+            return res.status(400).end();
+          });  
+    
 });
 
 router.patch("/", (req, res) => {
@@ -152,6 +162,10 @@ router.delete("/", (req, res) => {
     } else {
         handlePromise(req, res, entregas.deleteEntrega(_id));
     }
+});
+router.delete("/All", (req, res) => {
+    handlePromise(req, res, entregas.deleteAll());
+    
 });
 
 module.exports = router;

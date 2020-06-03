@@ -41,7 +41,7 @@ const validProjection = {
 function formatEntrega(entrega) {
   return {
     _id: entrega._id,
-    user: entrega.user,
+    user: entrega.user.full_name,
     link: entrega.link,
     date: entrega.date,
     accepted: entrega.accepted,
@@ -73,7 +73,7 @@ const Entregas = {
   },
   getEntregasByUserId: function (user_id) {
     return entregaModel
-      .findById({'user.user_id': user_id}, validProjection)
+      .find({user: user_id}, validProjection)
       .then((entrega) => {
         return entrega;
       })
@@ -83,7 +83,7 @@ const Entregas = {
   },  
   getEntregasTypeByUserId: function (user_id, entrega_type) {
     return entregaModel
-      .findById([{'user.user_id': user_id}, entrega_type], validProjection)
+      .find([{'user.user_id': user_id}, entrega_type], validProjection)
       .then((entrega) => {
         return entrega;
       })
@@ -152,6 +152,9 @@ const Entregas = {
         throw new Error(err.message);
       });
   },
+  deleteAll: function (){
+    mongoose.connection.db.dropCollection('entregas', function(err, result) {});
+  }
 };
 
 module.exports = Entregas;
