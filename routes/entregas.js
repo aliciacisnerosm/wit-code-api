@@ -39,16 +39,16 @@ router.get("/", validatePermission(3), function (req, res) {
 
 router.get("/attendance", validatePermission(3), function (req, res) {
     let active = req.query.active;
-    handlePromise(req, res, entregas.getAllType(1, active));
+    handlePromise(req, res, entregas.getAllType('attendance', active));
 });
 
 router.get("/evidence", validatePermission(3), function (req, res) {
     let active = req.query.active;
-    handlePromise(req, res, entregas.getAllType(2, active));
+    handlePromise(req, res, entregas.getAllType('evidence', active));
 });
 
 router.get("/misEntregas", (req, res) => {
-    handlePromise(req, res, entregas.getEntregaByUserId(req.user._id));
+    handlePromise(req, res, entregas.getEntregasByUserId(req.user._id));
 });
 
 router.post("/", (req, res) => {
