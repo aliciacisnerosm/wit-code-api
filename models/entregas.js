@@ -1,11 +1,6 @@
 const mongoose = require("mongoose");
 
 const entregasSchema = mongoose.Schema({
-  weekId: {
-    type: String,
-    required: true,
-    unique: true,
-  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'users',
@@ -36,7 +31,6 @@ const entregaModel = mongoose.model(modelName, entregasSchema);
 
 const validProjection = {
   _id: 1,
-  weekId: 1,
   user: 1,
   link: 1,
   date: 1,
@@ -47,7 +41,6 @@ const validProjection = {
 function formatEntrega(entrega) {
   return {
     _id: entrega._id,
-    weekId: entrega.weekId,
     user: entrega.user,
     link: entrega.link,
     date: entrega.date,

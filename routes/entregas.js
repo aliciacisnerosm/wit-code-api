@@ -52,8 +52,9 @@ router.get("/misEntregas", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-    let { weekId, link, file, date, accepted, entrega_type } = req.body;
-    if (!date || !accepted || !entrega_type) 
+    let { link, file, date, accepted, entrega_type } = req.body;
+    console.log(date, accepted, entrega_type)
+    if (!entrega_type) 
     {
         res.statusMessage = "Parameter missing in the body of the request.";
         return res.status(406).end();
@@ -94,7 +95,6 @@ router.post("/", (req, res) => {
             return res.status(406).end();
         }
         let newEntrega = {
-            weekId,
             user: req.user._id,
             link,
             date: new Date(),
