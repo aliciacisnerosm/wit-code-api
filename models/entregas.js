@@ -1,4 +1,3 @@
-@@ -0,0 +1,164 @@
 const mongoose = require("mongoose");
 
 const entregasSchema = mongoose.Schema({

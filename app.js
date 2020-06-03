@@ -29,7 +29,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/:route", [TokenValidation, ValidatePermissions]);
 app.use("/users", usersRouter);
-app.use("/entregas", entregassRouter);
+app.use("/entregas", entregasRouter);
 app.use("/login", loginRouter);
 
 // catch 404 and forward to error handler
