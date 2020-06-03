@@ -12,9 +12,13 @@ var loginRouter = require("./routes/login");
 var TokenValidation = require("./middleware/TokenValidation");
 var ValidatePermissions = require("./middleware/ValidatePermissions");
 
+var CORS = require("./middleware/cors");
+
 var app = express();
 
 // view engine setup
+app.use(CORS);
+
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 
