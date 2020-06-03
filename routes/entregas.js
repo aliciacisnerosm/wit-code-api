@@ -40,9 +40,8 @@ router.get("/", validatePermission(3), function (req, res) {
 
 router.get("/attendance", validatePermission(3), function (req, res) {
     let active = req.query.active;
-   entregas
-   .getAllType('attendance', active)
-   
+    handlePromise(req, res, entregas.getAllType('attendance', active));
+
 });
 
 router.get("/evidence", validatePermission(3), function (req, res) {
@@ -53,12 +52,12 @@ router.get("/evidence", validatePermission(3), function (req, res) {
 router.get("/misEntregas", (req, res) => {
     handlePromise(req, res, entregas.getEntregasByUserId(req.user._id));
 });
-/*router.get("/misEntregas/", (req, res) => {
-    handlePromise(req, res, entregas.getEntregasByUserId(req.user._id));
+router.get("/misEntregas/attendance", (req, res) => {
+    handlePromise(req, res, entregas.getEntregasTypeByUserId(req.user._id, 'attendance'));
 });
-router.get("/misEntregas", (req, res) => {
-    handlePromise(req, res, entregas.getEntregasByUserId(req.user._id));
-});*/
+router.get("/misEntregas/evidence", (req, res) => {
+    handlePromise(req, res, entregas.getEntregasTypeByUserId(req.user._id, 'evidence'));
+});
 
 router.post("/", (req, res) => {
     let { link, file, date, accepted, entrega_type } = req.body;

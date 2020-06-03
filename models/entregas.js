@@ -82,9 +82,10 @@ const Entregas = {
         throw new Error(err.message);
       });
   },  
-  getEntregasTypeByUserId: function (user_id, entrega_type) {
+  getEntregasTypeByUserId: function (user_id, type) {
+    let filter = { entrega_type: type };
     return entregaModel
-      .find([{'user.user_id': user_id}, entrega_type], validProjection)
+      .find({'user.user_id': user_id}, validProjection)
       .then((entrega) => {
         return entrega;
       })
