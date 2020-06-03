@@ -41,12 +41,20 @@ router.get("/", validatePermission(3), function (req, res) {
 router.get("/attendance", validatePermission(3), function (req, res) {
     let active = req.query.active;
     handlePromise(req, res, entregas.getAllType('attendance', active));
-
 });
-
 router.get("/evidence", validatePermission(3), function (req, res) {
     let active = req.query.active;
     handlePromise(req, res, entregas.getAllType('evidence', active));
+});
+router.get("/attendance/user", validatePermission(3), function (req, res) {
+    let active = req.query.active;
+    let { user } = req.body
+    handlePromise(req, res, entregas.getEntregasTypeByUserId(user, 'attendance'));
+});
+router.get("/evidence/user", validatePermission(3), function (req, res) {
+    let active = req.query.active;
+    let { user } = req.body
+    handlePromise(req, res, entregas.getEntregasTypeByUserId(user, 'evidence'));
 });
 
 router.get("/misEntregas", (req, res) => {
@@ -59,8 +67,9 @@ router.get("/misEntregas/evidence", (req, res) => {
     handlePromise(req, res, entregas.getEntregasTypeByUserId(req.user._id, 'evidence'));
 });
 
-router.post("/", (req, res) => {
-    let { link, file, date, accepted, entrega_type } = req.body;
+router.post("/",upload.single('file'), (req, res) => {
+    const file = req.file
+    let { link, date, accepted, entrega_type } = req.body;
     
     if (!entrega_type) 
     {

@@ -83,9 +83,10 @@ const Entregas = {
       });
   },  
   getEntregasTypeByUserId: function (user_id, type) {
-    let filter = { entrega_type: type };
+    let filter = { entrega_type: type, user: user_id };
     return entregaModel
-      .find({'user.user_id': user_id}, validProjection)
+      .find(filter, validProjection)
+      .populate('user', ['full_name', 'studentId'])
       .then((entrega) => {
         return entrega;
       })
