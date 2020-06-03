@@ -74,6 +74,7 @@ const Entregas = {
   getEntregasByUserId: function (user_id) {
     return entregaModel
       .find({user: user_id}, validProjection)
+      .populate('user', ['full_name', 'studentId'])
       .then((entrega) => {
         return entrega;
       })
@@ -107,6 +108,7 @@ const Entregas = {
     if (active) filter.active = active;
     return entregaModel
       .find(filter, validProjection)
+      .populate('user', ['full_name', 'studentId'])
       .then((result) => {
         return result;
       })
@@ -119,6 +121,7 @@ const Entregas = {
     if (active) filter.active = active;
     return entregaModel
       .find(filter, validProjection)
+      .populate('user', ['full_name', 'studentId'])
       .then((result) => {
         return result;
       })
