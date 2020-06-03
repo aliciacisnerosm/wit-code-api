@@ -83,8 +83,7 @@ router.post("/", (req, res) => {
                     date: new Date(),
                     accepted: false,
                     entrega_type,
-                };
-            
+                };            
                 handlePromise(req, res, entregas.createEntrega(newEntrega));
             }
         });
