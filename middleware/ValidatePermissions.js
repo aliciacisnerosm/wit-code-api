@@ -1,7 +1,7 @@
 const methodPermissions = {
   PATCH: 1,
-  GET: 2,
-  POST: 2,
+  GET: 1,
+  POST: 1,
   DELETE: 2,
 };
 // Use 4 for superuser --> queries return all fields
