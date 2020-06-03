@@ -108,14 +108,13 @@ router.post("/", (req, res) => {
 router.patch("/", (req, res) => {
     let {
         _id,
-        weekId,
         link,
         date,
         entrega_type,
         accepted,
     } = req.body;
 
-    user = re.user._id
+    //user = req.user._id
 
     if (!_id) {
         res.statusMessage = "Missing '_id'";
@@ -125,14 +124,6 @@ router.patch("/", (req, res) => {
     let newEntrega = {
         _id: _id,
     };
-
-    if (weekId) {
-        newEntrega.weekId = weekId;
-    }
-
-    if (user) {
-        newEntrega.user = user;
-    }
 
     if (link) {
         newEntrega.link = link;
